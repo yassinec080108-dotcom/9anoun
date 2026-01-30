@@ -24,6 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
             setLanguage(state.lang);
             setupEventListeners();
             setupScrollAnimations();
+
+            // Force play background video
+            const video = document.getElementById('hero-video');
+            if (video) {
+                video.play().catch(error => {
+                    console.log("Autoplay was prevented, waiting for interaction", error);
+                    // Fallback: play on first interaction
+                    document.addEventListener('click', () => video.play(), { once: true });
+                });
+            }
         } catch (error) {
             console.error('Initialization failed:', error);
         }
