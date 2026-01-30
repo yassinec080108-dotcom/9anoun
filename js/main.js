@@ -25,13 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
             setupScrollAnimations();
 
-            // Force play background video
+            // Force play and loop background video
             const video = document.getElementById('hero-video');
             if (video) {
+                video.muted = true;
+                video.loop = true;
                 video.play().catch(error => {
                     console.log("Autoplay was prevented, waiting for interaction", error);
                     // Fallback: play on first interaction
                     document.addEventListener('click', () => video.play(), { once: true });
+                });
+
+                // Manual loop fallback just in case
+                video.addEventListener('ended', function () {
+                    this.currentTime = 0;
+                    this.play();
                 });
             }
         } catch (error) {
