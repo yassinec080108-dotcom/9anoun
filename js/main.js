@@ -170,4 +170,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Run Init
     init();
+
+    // Preloader Logic
+    function setupPreloader() {
+        const preloader = document.getElementById('preloader');
+        const video = document.getElementById('hero-video');
+
+        if (!preloader) return;
+
+        const hidePreloader = () => {
+            preloader.classList.add('fade-out');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 700); // Match CSS transition duration
+        };
+
+        // Hide when video is ready
+        if (video) {
+            video.addEventListener('canplaythrough', hidePreloader, { once: true });
+
+            // Fallback: if already loaded or taking too long
+            if (video.readyState >= 3) {
+                hidePreloader();
+            }
+        }
+
+        // Global fallback: 5 seconds max
+        setTimeout(hidePreloader, 5000);
+    }
+
+    setupPreloader();
 });
