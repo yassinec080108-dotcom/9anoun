@@ -1,5 +1,43 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Preloader Logic (Run ASAP)
+    const setupPreloader = () => {
+        const preloader = document.getElementById('preloader');
+        const video = document.getElementById('hero-video');
+
+        if (!preloader) return;
+
+        const hidePreloader = () => {
+            console.log("Hiding preloader...");
+            preloader.classList.add('fade-out');
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 800);
+        };
+
+        // Global fallback: 4 seconds max (reduced from 5 for better UX)
+        const safetyTimeout = setTimeout(() => {
+            console.log("Preloader safety timeout reached");
+            hidePreloader();
+        }, 4000);
+
+        if (video) {
+            video.addEventListener('canplaythrough', () => {
+                clearTimeout(safetyTimeout);
+                hidePreloader();
+            }, { once: true });
+
+            if (video.readyState >= 3) {
+                clearTimeout(safetyTimeout);
+                hidePreloader();
+            }
+        } else {
+            hidePreloader();
+        }
+    };
+    setupPreloader();
+
     // State
     const state = {
         lang: localStorage.getItem('9anoun_lang') || 'en',
@@ -170,34 +208,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Run Init
     init();
-
-    // Preloader Logic
-    function setupPreloader() {
-        const preloader = document.getElementById('preloader');
-        const video = document.getElementById('hero-video');
-
-        if (!preloader) return;
-
-        const hidePreloader = () => {
-            preloader.classList.add('fade-out');
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 700); // Match CSS transition duration
-        };
-
-        // Hide when video is ready
-        if (video) {
-            video.addEventListener('canplaythrough', hidePreloader, { once: true });
-
-            // Fallback: if already loaded or taking too long
-            if (video.readyState >= 3) {
-                hidePreloader();
-            }
-        }
-
-        // Global fallback: 5 seconds max
-        setTimeout(hidePreloader, 5000);
-    }
-
-    setupPreloader();
 });

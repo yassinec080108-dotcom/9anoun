@@ -1259,6 +1259,10 @@ section {
 /* ========================================
    Preloader & Loader Animation
    ======================================== */
+#preloader {
+    transition: opacity 0.7s ease-in-out;
+}
+
 #preloader.fade-out {
     opacity: 0;
     pointer-events: none;
